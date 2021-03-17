@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <style>
+    body {
+      background-color: grey;
+      margin: 0;
+      font-size: 8px;
+    }
+    /* .container-pdf {
+      width: ${width}px;
+      height: ${height - 1}px;
+      padding: 15px 10px;
+      background-color: #fff;
+    } */
+    .row {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+    .title {
+      border: 1px solid gray;
+      text-align: center;
+      background: #d1d1cf;
+    }
+    .title h1 {
+      font-size: 1rem;
+      margin: 0;
+      color: black;
+    }
+    .info-left {
+      position: relative;
+      width: 60%;
+    }
+    .info-left div {
+      border-bottom: 1px solid black;
+    }
+    .info-right {
+      padding-left: 1rem;
+      width: 40%;
+    }
+    .time {
+      width: 80%;
+    }
+    .id-invoice span {
+      width: 50%;
+      text-align: right;
+    }
+    .qr {
+      border: 1px solid gray;
+      height: 35px;
+      display: flex;
+    }
+
+    .admin-stamp{
+       display: table;
+       vertical-align: center;
+       text-align: center;
+    }
+
+    .admin-stamp img{
+        width: auto;
+        height: 100%;
+    }
+    .qr div {
+      width: 50%;
+      border-right: 1px solid gray;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+    }
+    .qr div:last-child {
+      border: none;
+    }
+    .total-head {
+      position: absolute;
+      bottom: 0;
+    }
+    .total-item {
+      padding: 2px;
+      text-align: right;
+    }
+    .wrap-item table {
+      width: 100%;
+      border-top: 1px solid grey;
+      border-bottom: 0;
+      border-collapse: collapse;
+      text-align: center;
+    }
+    .wrap-item table th,
+    td {
+      border-right: 1px solid grey;
+      border-bottom: 1px solid grey;
+    }
+    .wrap-item table td {
+      work-break: break-word;
+    }
+    .wrap-item table th:last-child,
+    td:last-child {
+      border-right: 0;
+    }
+    .label,
+    .wrap-item table th {
+      background-color: #d1d1cf;
+      padding: 2px 0;
+    }
+    .wrap-item table td{
+        padding: 2px 0;
+    }
+    .wrap-item table tr:nth-child(even) {
+      background-color: #fff;
+    }
+    .wrap-item table tr:nth-child(odd) {
+      background-color: #e6e3e3;
+    }
+    .tr-empty {
+      height: 1rem;
+    }
+    .note {
+      padding: 0.5rem 0rem;
+    }
+    .caculator-price {
+      border: 1px solid grey;
+    }
+    .price-left {
+      width: 60%;
+      padding: 5px;
+      border-right: 1px solid grey;
+    }
+    .price-right {
+      width: 40%;
+    }
+    .col-6 {
+      width: 50%;
+    }
+    .price-right .row {
+      width: 100%;
+      height: 33.33%;
+    }
+    .price-right .row div {
+      border: 1px solid grey;
+      padding: 2px;
+    }
+    .item-name {
+      text-align: left;
+      width: 45%;
+      height: auto;
+    }
+    .item-name p {
+      margin: 0;
+      work-break: break-word;
+    }
+    .text-right {
+      text-align: right;
+    }
+    .remarks {
+      margin-top: 8px;
+    }
+    .remarks h5 {
+      margin: 0;
+    }
+    .content-remarks {
+      border: 1px solid grey;
+      height: 4rem;
+    }
+    .sale {
+        margin-left: 5px;
+    }
+    .td-amount {
+      width: 10%;
+    }
+    .td-price {
+      width: 15%;
+    }
+    .td-total {
+      width: 20%;
+    }
+    .stamp {
+      float: right;
+      border: none !important;
+      background: transparent !important;
+      width: 60px;
+      height: 60px;
+      object-fit: fill;
+    }
+    .content-info {
+      position: absolute;
+      left: 0;
+    }
+    .wrap-right {
+      position: relative;
+      min-height: 100px;
+    }
+  </style>
+  <body>
+    <div class="container-pdf">
+      <div class="header">
+        <div class="title">
+          <h1>Quotation</h1>
+        </div>
+        <div class="row">
+          <div class="info-left">
+            <div class="name-info"><span>Sasaki development</span></div>
+            <div><span>Kimura</span><span>You</span></div>
+            <div class="time">
+              <span>Subject: Estimate for November</span>
+            </div>
+            <div class="total-head">
+              <span>Total amount : ${formatMoney(totalPrice + vat)}</span>
+            </div>
+          </div>
+
+          <div class="info-right">
+            <div class="row id-invoice">
+              <span>No.</span>
+              <span>${item.id}</span>
+            </div>
+            <div class="text-right">
+              <span>${moment(item.createdAt).format('DD/MM/YYYY')}</span>
+            </div>
+            <div class="wrap-right">
+              <div class="content-info">
+                <div><span>${user?.companyName || ''}</span></div>
+                <div>${user?.address || ''}</div>
+                <div>TEL ${user?.phone || ''} FAX ${user?.fax || ''}</div>
+              </div>
+              <img
+                class="stamp"
+                src="https://s3-ap-northeast-1.amazonaws.com/dev.jewelry-storage/${stampCompany}"
+                alt=""
+              />
+            </div>
+            <div class="qr">
+              <div></div>
+              <div></div>
+              <div class="admin-stamp">
+                <img
+                  src="https://s3-ap-northeast-1.amazonaws.com/dev.jewelry-storage/${stampCurator}"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      
+      <div class="main">
+        <div class="total-item"><span>Unit: Yen</span></div>
+        <div class="wrap-item">
+          <table>
+            <tr>
+              <th>id</th>
+              <th>name</th>
+              <th>amount</th>
+              <th>price</th>
+              <th>total</th>
+            </tr>
+            <tr>
+              <td>${item.id}</td>
+              <td>${item.metadata}</td>
+              <td>${item.amount}</td>
+              <td>
+                ${formatMoney(item.meterialPrice ? +item.meterialPrice : 0)}
+              </td>
+              <td>${formatMoney(totalPrice)}</td>
+            </tr>
+            ${item.note ? renderNote(item.note || '') : ''} ${renderTdEmpty(5)}
+          </table>
+        </div>
+        <div class="note">
+          <span>Note</span>
+        </div>
+        <div class="row caculator-price">
+          <div class="price-left">
+            <div>Breakdown</div>
+          </div>
+          <div class="price-right">
+            <div class="row">
+              <div class="col-6 label">total</div>
+              <div class="col-6 text-right">
+                ${formatMoney(totalItemPrice(item.note || '', totalPrice))}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 label">vat</div>
+              <div class="col-6 text-right">${formatMoney(vat)}</div>
+            </div>
+            <div class="row">
+              <div class="col-6 label">last total</div>
+              <div class="col-6 text-right">
+                ${formatMoney(totalItemPrice(item.note || '', totalPrice) +
+                vat)}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="remarks">
+          <h5>Remarks column</h5>
+          <div class="content-remarks"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
